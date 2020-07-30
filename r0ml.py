@@ -6,25 +6,28 @@ from keras.layers import Dense
 from numpy import asarray
 from matplotlib import pyplot
 import pandas as pd
+
 # define the dataset
-data = pd.read_csv('https://raw.githubusercontent.com/nychealth/coronavirus-data/master/boro/boroughs-case-hosp-death.csv')
+data = pd.read_csv(
+    'https://raw.githubusercontent.com/nychealth/coronavirus-data/master/boro/boroughs-case-hosp-death.csv')
 
 print(data)
 
 caseCount = []
-d = []
+d, h = [], []
+
+totalRemoved = 0
 
 for row, col in data.iterrows():
     if row == 0: continue
-    caseCount.append(col['SI_DEATH_COUNT'])
+    caseCount.append(col['SI_CASE_COUNT'])
     d.append(col['SI_DEATH_COUNT'])
 
 sum = 0
 totalCases = []
 for i in caseCount:
-   sum += caseCount[i]
-   totalCases.append(sum)
-
+    sum += caseCount[i]
+    totalCases.append(sum)
 
 x = asarray([i for i in range(len(totalCases))])
 y = asarray(totalCases)
@@ -56,9 +59,9 @@ yhat_plot = scale_y.inverse_transform(yhat)
 # report model error
 print('MSE: %.3f' % mean_squared_error(y_plot, yhat_plot))
 # plot x vs y
-pyplot.scatter(x_plot,y_plot, label='Actual')
+pyplot.scatter(x_plot, y_plot, label='Actual')
 # plot x vs yhat
-pyplot.scatter(x_plot,yhat_plot, label='Predicted')
+pyplot.scatter(x_plot, yhat_plot, label='Predicted')
 pyplot.title('Input (x) versus Output (y)')
 pyplot.xlabel('Days Since Pandemic (x)')
 pyplot.ylabel('Cases on Day x in SI (y)')
