@@ -1,2 +1,2 @@
 # nychealthdata
-nychealth data query and use
+nychealth data query and attempted use in basic SIR model
