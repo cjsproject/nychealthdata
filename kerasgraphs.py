@@ -26,7 +26,7 @@ for row, col in data.iterrows():
 sum = 0
 totalCases = []
 for i in caseCount:
-    sum += caseCount[i]
+    sum += i
     totalCases.append(sum)
 
 x = asarray([i for i in range(len(totalCases))])
