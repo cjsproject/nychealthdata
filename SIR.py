@@ -19,21 +19,26 @@ for row, col in data.iterrows():
         x.append(col['SI_CASE_COUNT'])
         d.append(col['SI_DEATH_COUNT'])
         h.append(col['SI_HOSPITALIZED_COUNT'])
-        tRemoved += col['SI_DEATH_COUNT']
-        tCases += col['SI_CASE_COUNT']
         continue
     x.append(col['SI_CASE_COUNT'])
     d.append(col['SI_DEATH_COUNT'])
     h.append(col['SI_HOSPITALIZED_COUNT'])
-    tRemoved += col['SI_DEATH_COUNT']
-    tCases += col['SI_CASE_COUNT']
+    #tRemoved += col['SI_DEATH_COUNT']
+    #tCases += col['SI_CASE_COUNT']
 
-r = tCases / len(x)
-a = tRemoved / len(x)
+rateOfCases = 0
+removalRate = 0
+for i in range(1, len(x)):
+    rateOfCases += x[i] - x[i-1]
+    removalRate += d[i] - x[i-1]
+
+
+r = round(abs(rateOfCases/len(x)-1), 4)#tCases / len(x)
+a = 1.2625#round(abs(removalRate/len(d)-1), 4)#tRemoved / len(x)
 
 
 def N():
-    return 480000
+    return 1
 
 
 def p():
@@ -54,17 +59,17 @@ def diff(f):
 
 
 def solve(S, I, R):
-    for i in range(1, len(x)):
-        S.append(S[i - 1] + (-r * S[i - 1] * I[i - 1]))
-        I.append(I[i - 1] + (r * S[i - 1] * I[i - 1] - a * I[i - 1]))
-        R.append(R[i - 1] + (a * I[i - 1]))
+    for w in range(1, t):
+        S.append(S[w - 1] + (-r * S[w-1] * I[w-1]))
+        I.append(I[w - 1] + (r * S[w-1] * I[w-1] - a * I[w-1]))
+        R.append(R[w - 1] + (a * I[w-1]))
 
-
+pop = 1000
 S = []
 I = []
 R = []
 t = len(x)
-I0 = x[0]
+I0 = round(x[0]/pop, 4)
 I.append(I0)
 S0 = N() - I0
 S.append(S0)
@@ -73,7 +78,7 @@ R.append(R0)
 solve(S, I, R)
 
 print("S(t): ", S, "I(t): ", I, "R(t): ", R, sep='\n')
-
+print(a , r)
 #plt.ylim(ymin=0)
 
 plt.plot(np.arange(0, t), S, 'r')
@@ -83,5 +88,5 @@ plt.plot(np.arange(0, t), R, 'b')
 plt.xlabel("day")
 plt.ylabel("S(t),I(T),R(t)")
 plt.title('Susceptibility, infection and recovery')
-plt.autoscale()
+#plt.autoscale()
 plt.show()
